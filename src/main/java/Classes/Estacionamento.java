@@ -17,8 +17,8 @@ public class Estacionamento {
         return veiculosEstacionados;
     }
 
-    public void estacionarVeiculo(Veiculo veiculo) throws Exception {
-        int posicaoLivre = -1;
+    public int estacionarVeiculo(Veiculo veiculo) throws Exception {
+        int vaga = -1;
         for (int i = 0; i < veiculosEstacionados.size(); i++) {
             if (veiculosEstacionados.get(i) != null) {
                 if (Objects.equals(veiculosEstacionados.get(i).placa, veiculo.placa)) {
@@ -27,37 +27,38 @@ public class Estacionamento {
             }
 
             if (veiculosEstacionados.get(i) == null) {
-                posicaoLivre = i;
+                vaga = i;
                 break;
             }
         }
 
-        if (posicaoLivre == -1) {
+        if (vaga == -1) {
             throw new EstacionamentoCheio("O estacionamento está cheio.");
         }
 
-        veiculo.setEntrada(LocalDateTime.now());
-        veiculosEstacionados.set(posicaoLivre, veiculo);
+        veiculosEstacionados.set(vaga, veiculo);
+
+        return vaga + 1;
     }
 
     public Veiculo tirarVeiculo(Veiculo veiculo) throws VeiculoNaoEncontrado {
-        int posicaoRemovida = -1;
+        int vagaLiberada = -1;
         for (int i = 0; i < veiculosEstacionados.size(); i++) {
             if (veiculosEstacionados.get(i) != null) {
                 if (Objects.equals(veiculosEstacionados.get(i).placa, veiculo.placa)) {
-                    posicaoRemovida = i;
+                    vagaLiberada = i;
                     break;
                 }
             }
         }
 
-        if (posicaoRemovida == -1) {
+        if (vagaLiberada == -1) {
             throw new VeiculoNaoEncontrado("O veículo não está estacionado.");
         }
 
-        Veiculo veiculoRemovido = veiculosEstacionados.get(posicaoRemovida);
+        Veiculo veiculoRemovido = veiculosEstacionados.get(vagaLiberada);
         veiculoRemovido.setSaida(LocalDateTime.now());
-        veiculosEstacionados.set(posicaoRemovida, null);
+        veiculosEstacionados.set(vagaLiberada, null);
 
         return veiculoRemovido;
     }
