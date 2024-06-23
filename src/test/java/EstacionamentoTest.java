@@ -14,7 +14,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class EstacionamentoTest {
     Estacionamento estacionamento;
-    Veiculo veiculo;
     Random random = new Random();
 
     Veiculo criarVeiculoComPlacaAleatoria(){
