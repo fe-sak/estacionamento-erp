@@ -19,7 +19,8 @@ public class Main {
                 Operacao operacao = escolherUmaOperacao();
 
                 if (operacao == Operacao.ENCERRAR_PROGRAMA) {
-                    System.out.println("O programa foi encerrado.");
+                    IO.printar("O programa foi encerrado.");
+                    Thread.sleep(1000);
                     IO.getTextIO().getTextTerminal().dispose();
                     return;
                 }
@@ -27,8 +28,7 @@ public class Main {
                 executarOperacao(operacao, scanner, estacionamento);
                 System.out.println();
             } catch (Exception e) {
-                System.out.print("ERRO: "); // TODO pintar de vermelho usando a lib de console
-                System.out.println(e.getMessage());
+                IO.printarErro("ERRO: " + e.getMessage());
             }
         }
     }
@@ -117,6 +117,7 @@ public class Main {
                 .withInvalidIndexErrorMessagesProvider((s, s1, i, i1) ->
                         Collections.singletonList("Opção inválida. Digite um número de " + i + " até " + i1))
                 .withValueFormatter(Operacao::getNome)
+                .withPromptAdjustments(true)
                 .read("Escolha uma operação: ");
     }
 }

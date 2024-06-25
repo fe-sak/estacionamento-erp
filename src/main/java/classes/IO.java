@@ -27,4 +27,10 @@ public abstract class IO {
         );
     }
 
+    public static void printarErro(String message) {
+        getTextIO().getTextTerminal().executeWithPropertiesConfigurator(
+                props -> props.setPromptColor(Color.RED),
+                t -> t.println(message)
+        );
+    }
 }
