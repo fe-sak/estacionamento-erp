@@ -1,9 +1,9 @@
-import Classes.Carro;
-import Classes.Estacionamento;
-import Classes.Veiculo;
-import Excessoes.EstacionamentoCheio;
-import Excessoes.VeiculoJaEstacionado;
-import Excessoes.VeiculoNaoEncontrado;
+import classes.Carro;
+import classes.Estacionamento;
+import classes.Veiculo;
+import excessoes.EstacionamentoCheio;
+import excessoes.VeiculoJaEstacionado;
+import excessoes.VeiculoNaoEncontrado;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

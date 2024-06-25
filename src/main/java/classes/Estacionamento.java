@@ -1,8 +1,8 @@
-package Classes;
+package classes;
 
-import Excessoes.VeiculoJaEstacionado;
-import Excessoes.EstacionamentoCheio;
-import Excessoes.VeiculoNaoEncontrado;
+import excessoes.VeiculoJaEstacionado;
+import excessoes.EstacionamentoCheio;
+import excessoes.VeiculoNaoEncontrado;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;

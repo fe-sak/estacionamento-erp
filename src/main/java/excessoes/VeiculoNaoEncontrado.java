@@ -1,4 +1,4 @@
-package Excessoes;
+package excessoes;
 
 public class VeiculoNaoEncontrado extends Exception {
     public VeiculoNaoEncontrado(String mensagemDeErro) {

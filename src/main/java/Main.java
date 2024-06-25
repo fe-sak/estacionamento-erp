@@ -1,4 +1,7 @@
-import Classes.*;
+import classes.*;
+import enums.Operacao;
+import org.beryx.textio.TextIO;
+import org.beryx.textio.TextIoFactory;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.util.Arrays;
@@ -6,10 +9,10 @@ import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
+        System.out.println("++++++++++ Gerenciador de estacionamento inicializado ++++++++++".toUpperCase());
         Scanner scanner = new Scanner(System.in);
         Estacionamento estacionamento = new Estacionamento();
-
-        System.out.println("Este programa permite gerenciar um estacionamento");
+        TextIO textIO = TextIoFactory.getTextIO();
 
         while (true) {
             try {
@@ -125,12 +128,8 @@ public class Main {
     }
 
     private static void imprimirOperacoesDisponiveis() {
-        System.out.println("Operações disponíveis:");
-        System.out.println("1 - Estacionar um veículo");
-        System.out.println("2 - Retirar um veículo");
-        System.out.println("3 - Mostrar o estacionamento");
-        System.out.println("4 - Ver os registros de hoje");
-        System.out.println("5 - Imprimir relatório em pdf");
-        System.out.println("6 - Parar o programa");
+        for (Operacao o : Operacao.values()) {
+            System.out.println(o.getNome());
+        }
     }
 }
