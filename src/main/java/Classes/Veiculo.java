@@ -1,7 +1,10 @@
 package Classes;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 
 public abstract class Veiculo {
     String cor;
@@ -27,6 +30,10 @@ public abstract class Veiculo {
         return taxaHora;
     }
 
+    public BigDecimal getTaxaHoraFormatada() {
+        return getTaxaHora().setScale(2, RoundingMode.HALF_DOWN);
+    }
+
     public Veiculo(String placa) {
         this.placa = placa;
     }
@@ -47,7 +54,29 @@ public abstract class Veiculo {
         return saida;
     }
 
+    public String getSaidaFormatada() {
+        return this.getSaida().format(DateTimeFormatter.ofPattern("dd/MM/yyyy - HH:mm:ss"));
+    }
+
     public void setSaida(LocalDateTime saida) {
         this.saida = saida;
+    }
+
+    public void imprimir() {
+        System.out.println("Veículo (" + this.getClass().getSimpleName() + ")");
+        System.out.println("\tPlaca: " + this.getPlaca());
+        System.out.println("\tCor: " + this.getCor());
+    }
+
+    public String getEntradaFormatada() {
+        return this.getEntrada().format(DateTimeFormatter.ofPattern("dd/MM/yyyy - HH:mm:ss"));
+    }
+
+    public long getPermanencia() {
+        return ChronoUnit.HOURS.between(getEntrada(), getSaida());
+    }
+
+    public String getPagamento() {
+        return (BigDecimal.valueOf(getPermanencia()).multiply(getTaxaHora()).setScale(2, RoundingMode.HALF_DOWN)).toString();
     }
 }

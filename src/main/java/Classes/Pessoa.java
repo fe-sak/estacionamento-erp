@@ -16,4 +16,10 @@ public class Pessoa {
         this.nome = nome;
         this.cpf = cpf;
     }
+
+    public void imprimir() {
+        System.out.println("Cliente");
+        System.out.println("\tNome: " + this.getNome());
+        System.out.println("\tCpf: " + this.getCpf());
+    }
 }

@@ -76,12 +76,12 @@ class EstacionamentoTest {
         Veiculo veiculoEsperado = criarVeiculoComPlacaAleatoria();
         estacionamento.estacionarVeiculo(veiculoEsperado);
 
-        Veiculo veiculoReal = estacionamento.tirarVeiculo(veiculoEsperado);
+        Veiculo veiculoReal = estacionamento.tirarVeiculo(veiculoEsperado.getPlaca());
         assertEquals(veiculoEsperado, veiculoReal);
     }
 
     @Test
     void tirarVeiculoDeveGerarExcessaoVeiculoNaoEncontrado() {
-        assertThrows(VeiculoNaoEncontrado.class, () -> estacionamento.tirarVeiculo(criarVeiculoComPlacaAleatoria()));
+        assertThrows(VeiculoNaoEncontrado.class, () -> estacionamento.tirarVeiculo(criarVeiculoComPlacaAleatoria().getPlaca()));
     }
 }

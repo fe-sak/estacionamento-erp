@@ -12,7 +12,6 @@ import java.util.Objects;
 public class Estacionamento {
     private final List<Veiculo> veiculosEstacionados = Arrays.asList(new Veiculo[8]);
 
-
     public List<Veiculo> getVeiculosEstacionados() {
         return veiculosEstacionados;
     }
@@ -41,11 +40,11 @@ public class Estacionamento {
         return vaga + 1;
     }
 
-    public Veiculo tirarVeiculo(Veiculo veiculo) throws VeiculoNaoEncontrado {
+    public Veiculo tirarVeiculo(String placa) throws VeiculoNaoEncontrado {
         int vagaLiberada = -1;
         for (int i = 0; i < veiculosEstacionados.size(); i++) {
             if (veiculosEstacionados.get(i) != null) {
-                if (Objects.equals(veiculosEstacionados.get(i).placa, veiculo.placa)) {
+                if (Objects.equals(veiculosEstacionados.get(i).placa, placa)) {
                     vagaLiberada = i;
                     break;
                 }

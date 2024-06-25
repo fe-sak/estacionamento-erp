@@ -1,28 +1,33 @@
 import Classes.*;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
-import java.math.RoundingMode;
-import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.Scanner;
 
 public class Main {
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
         Estacionamento estacionamento = new Estacionamento();
 
         System.out.println("Este programa permite gerenciar um estacionamento");
 
         while (true) {
-            imprimirOperacoesDisponiveis();
+            try {
+                imprimirOperacoesDisponiveis();
 
-            String operacao = escolherUmaOperacao(scanner);
+                String operacao = escolherUmaOperacao(scanner);
 
-            if (operacao.equals("6")) {
-                return;
+                if (operacao.equals("6")) {
+                    System.out.println("O programa foi encerrado.");
+                    return;
+                }
+
+                executarOperacao(operacao, scanner, estacionamento);
+                System.out.println();
+            } catch (Exception e) {
+                System.out.print("ERRO: "); // TODO pintar de vermelho usando a lib de console
+                System.out.println(e.getMessage());
             }
-
-            executarOperacao(operacao, scanner, estacionamento);
         }
     }
 
@@ -64,23 +69,31 @@ public class Main {
                 int vaga = estacionamento.estacionarVeiculo(veiculo);
 
                 System.out.println("TICKET DO ESTACIONAMENTO ----------------------------------------------");
+
                 System.out.println("Vaga: 0" + vaga);
-                System.out.println("Entrada: " + veiculo.getEntrada().format(DateTimeFormatter.ofPattern("dd/MM/yyyy - HH:mm:ss")));
-                System.out.println("Taxa por hora: R$ " + veiculo.getTaxaHora().setScale(2, RoundingMode.HALF_DOWN));
+                System.out.println("Entrada: " + veiculo.getEntradaFormatada());
+                System.out.println("Taxa por hora: R$ " + veiculo.getTaxaHoraFormatada());
 
-                System.out.println("Cliente");
-                System.out.println("\tNome: " + veiculo.getCliente().getNome());
-                System.out.println("\tCpf: " + veiculo.getCliente().getCpf());
-
-                System.out.println("Veículo (" + veiculo.getClass().getSimpleName() + ")");
-                System.out.println("\tPlaca: " + veiculo.getPlaca());
-                System.out.println("\tCor: " + veiculo.getCor());
+                veiculo.getCliente().imprimir();
+                veiculo.imprimir();
 
                 break;
             }
             case "2": {
-                System.out.println("2");
-                throw new NotImplementedException();
+                System.out.println("Digite a placa do veículo: ");
+                String placa = scanner.nextLine();
+
+                Veiculo veiculo = estacionamento.tirarVeiculo(placa);
+
+                System.out.println("Veículo retirado com sucesso"); // TODO pintar de verde
+                veiculo.imprimir();
+
+                System.out.println("\tHorário de entrada:" + veiculo.getEntradaFormatada());
+                System.out.println("\tHorário de saída:" + veiculo.getSaidaFormatada());
+                System.out.println("\tPermanência total: " + veiculo.getPermanencia() + "h");
+                System.out.println("\tPagamento: R$" + veiculo.getPagamento());
+
+                break;
             }
             case "3": {
                 System.out.println("3");
