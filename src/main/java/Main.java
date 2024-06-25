@@ -1,27 +1,26 @@
 import classes.*;
 import enums.Operacao;
-import org.beryx.textio.TextIO;
-import org.beryx.textio.TextIoFactory;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
-        System.out.println("++++++++++ Gerenciador de estacionamento inicializado ++++++++++".toUpperCase());
+        IO.printarInfo("++++++++++ Gerenciador de estacionamento inicializado ++++++++++".toUpperCase());
+        IO.printarLinhaVazia();
+
         Scanner scanner = new Scanner(System.in);
         Estacionamento estacionamento = new Estacionamento();
-        TextIO textIO = TextIoFactory.getTextIO();
 
         while (true) {
             try {
-                imprimirOperacoesDisponiveis();
+                Operacao operacao = escolherUmaOperacao();
 
-                String operacao = escolherUmaOperacao(scanner);
-
-                if (operacao.equals("6")) {
+                if (operacao == Operacao.ENCERRAR_PROGRAMA) {
                     System.out.println("O programa foi encerrado.");
+                    IO.getTextIO().getTextTerminal().dispose();
                     return;
                 }
 
@@ -34,9 +33,9 @@ public class Main {
         }
     }
 
-    private static void executarOperacao(String operacao, Scanner scanner, Estacionamento estacionamento) throws Exception {
+    private static void executarOperacao(Operacao operacao, Scanner scanner, Estacionamento estacionamento) throws Exception {
         switch (operacao) {
-            case "1": {
+            case ESTACIONAR: {
                 System.out.println("Estacionar um veículo foi selecionada");
 
                 System.out.println("Digite o nome do cliente: ");
@@ -48,7 +47,7 @@ public class Main {
                 System.out.println("Qual o veículo? Digite 1 para carro e 2 para moto: ");
                 String tipoVeiculo = scanner.nextLine();
 
-                while (!Arrays.asList(new String[]{"1", "2"}).contains(operacao)) {
+                while (!Arrays.asList(new String[]{"1", "2"}).contains(String.valueOf(operacao.getCodigo()))) {
                     System.out.print("Veículo inválido.\nDigite 1 para carro e 2 para moto: ");
                     tipoVeiculo = scanner.nextLine();
                 }
@@ -82,7 +81,7 @@ public class Main {
 
                 break;
             }
-            case "2": {
+            case RETIRAR_VEICULO: {
                 System.out.println("Digite a placa do veículo: ");
                 String placa = scanner.nextLine();
 
@@ -98,38 +97,26 @@ public class Main {
 
                 break;
             }
-            case "3": {
+            case PRINTAR_ESTACIONAMENTO: {
                 System.out.println("3");
                 throw new NotImplementedException();
             }
-            case "4": {
+            case PRINTAR_REGISTROS_DO_DIA: {
                 System.out.println("4");
                 throw new NotImplementedException();
             }
-            case "5": {
+            case PRINTAR_RELATORIO: {
                 System.out.println("5");
                 throw new NotImplementedException();
             }
-            default: {
-                System.out.println("Operação não reconhecida, tente novamente");
-            }
         }
     }
 
-    private static String escolherUmaOperacao(Scanner scanner) {
-        System.out.print("Escolha uma operação: ");
-        String operacao = scanner.nextLine();
-
-        while (!Arrays.asList(new String[]{"1", "2", "3", "4", "5", "6"}).contains(operacao)) {
-            System.out.println("Operação inválida.\nDigite uma operação válida: ");
-            operacao = scanner.nextLine();
-        }
-        return operacao;
-    }
-
-    private static void imprimirOperacoesDisponiveis() {
-        for (Operacao o : Operacao.values()) {
-            System.out.println(o.getNome());
-        }
+    private static Operacao escolherUmaOperacao() {
+        return IO.getTextIO().newEnumInputReader(Operacao.class)
+                .withInvalidIndexErrorMessagesProvider((s, s1, i, i1) ->
+                        Collections.singletonList("Opção inválida. Digite um número de " + i + " até " + i1))
+                .withValueFormatter(Operacao::getNome)
+                .read("Escolha uma operação: ");
     }
 }
