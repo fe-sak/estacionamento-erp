@@ -4,7 +4,6 @@ import Classes.Veiculo;
 import Excessoes.EstacionamentoCheio;
 import Excessoes.VeiculoJaEstacionado;
 import Excessoes.VeiculoNaoEncontrado;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -16,7 +15,7 @@ class EstacionamentoTest {
     Estacionamento estacionamento;
     Random random = new Random();
 
-    Veiculo criarVeiculoComPlacaAleatoria(){
+    Veiculo criarVeiculoComPlacaAleatoria() {
         return new Carro(String.valueOf(random.nextDouble()));
     }
 
@@ -26,11 +25,32 @@ class EstacionamentoTest {
     }
 
     @Test
-    void estacionarVeiculo() throws Exception {
-        Veiculo veiculo = criarVeiculoComPlacaAleatoria();
-        estacionamento.estacionarVeiculo(veiculo);
+    void estacionarVeiculoDeveEstacionarNaPrimeiraVaga() throws Exception {
+        Veiculo veiculoEsperado = criarVeiculoComPlacaAleatoria();
 
-        assertEquals(veiculo, estacionamento.getVeiculosEstacionados().get(0));
+        int vagaEsperada = 1;
+        int vagaReal = estacionamento.estacionarVeiculo(veiculoEsperado);
+        assertEquals(vagaEsperada, vagaReal);
+
+        Veiculo veiculoReal = estacionamento.getVeiculosEstacionados().get(0);
+        assertEquals(veiculoEsperado, veiculoReal);
+    }
+
+    @Test
+    void estacionarVeiculoDeveEstacionarNaUltimaVaga() throws Exception {
+        for (int i = 0; i < 7; i++) {
+            estacionamento.estacionarVeiculo(criarVeiculoComPlacaAleatoria());
+        }
+
+        Veiculo veiculoEsperado = new Carro("");
+
+        int vagaEsperada = 8;
+        int vagaReal = estacionamento.estacionarVeiculo(veiculoEsperado);
+
+        assertEquals(vagaEsperada, vagaReal);
+
+        Veiculo veiculoReal = estacionamento.getVeiculosEstacionados().get(7);
+        assertEquals(veiculoEsperado, veiculoReal);
     }
 
     @Test
@@ -53,14 +73,15 @@ class EstacionamentoTest {
 
     @Test
     void tirarVeiculo() throws Exception {
-        Veiculo veiculo = criarVeiculoComPlacaAleatoria();
-        estacionamento.estacionarVeiculo(veiculo);
+        Veiculo veiculoEsperado = criarVeiculoComPlacaAleatoria();
+        estacionamento.estacionarVeiculo(veiculoEsperado);
 
-        assertEquals(veiculo, estacionamento.tirarVeiculo(veiculo));
+        Veiculo veiculoReal = estacionamento.tirarVeiculo(veiculoEsperado.getPlaca());
+        assertEquals(veiculoEsperado, veiculoReal);
     }
 
     @Test
     void tirarVeiculoDeveGerarExcessaoVeiculoNaoEncontrado() {
-        assertThrows(VeiculoNaoEncontrado.class, () -> estacionamento.tirarVeiculo(criarVeiculoComPlacaAleatoria()));
+        assertThrows(VeiculoNaoEncontrado.class, () -> estacionamento.tirarVeiculo(criarVeiculoComPlacaAleatoria().getPlaca()));
     }
 }
