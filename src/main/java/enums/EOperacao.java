@@ -1,6 +1,6 @@
 package enums;
 
-public enum Operacao {
+public enum EOperacao {
     ESTACIONAR(1, "Estacionar um veículo"),
     RETIRAR_VEICULO(2, "Retirar um veículo"),
     PRINTAR_ESTACIONAMENTO(3, "Mostrar o estacionamento"),
@@ -11,7 +11,7 @@ public enum Operacao {
     private final int codigo;
     private final String nome;
 
-    Operacao(int codigo, String nome) {
+    EOperacao(int codigo, String nome) {
         this.codigo = codigo;
         this.nome = nome;
     }

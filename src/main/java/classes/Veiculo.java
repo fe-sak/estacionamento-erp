@@ -62,10 +62,12 @@ public abstract class Veiculo {
         this.saida = saida;
     }
 
-    public void imprimir() {
-        System.out.println("Veículo (" + this.getClass().getSimpleName() + ")");
-        System.out.println("\tPlaca: " + this.getPlaca());
-        System.out.println("\tCor: " + this.getCor());
+    @Override
+    public String toString() {
+        return "Veículo\n" +
+                "\tTipo: " + this.getClass().getSimpleName() + "\n" +
+                "\tPlaca: " + this.getPlaca() + "\n" +
+                "\tCor: " + this.getCor();
     }
 
     public String getEntradaFormatada() {

@@ -1,9 +1,12 @@
 package classes;
 
+import enums.EOperacao;
+import enums.EVeiculo;
 import org.beryx.textio.TextIO;
 import org.beryx.textio.TextIoFactory;
 
 import java.awt.*;
+import java.util.Collections;
 
 public abstract class IO {
     static TextIO textIO = TextIoFactory.getTextIO();
@@ -32,5 +35,13 @@ public abstract class IO {
                 props -> props.setPromptColor(Color.RED),
                 t -> t.println(message)
         );
+    }
+
+    public static EOperacao escolherUmaOperacao() {
+        return IO.getTextIO().newEnumInputReader(EOperacao.class)
+                .withInvalidIndexErrorMessagesProvider((s, s1, i, i1) ->
+                        Collections.singletonList("Opção inválida. Digite um número de " + i + " até " + i1))
+                .withValueFormatter(EOperacao::getNome)
+                .read("Escolha uma operação: ");
     }
 }
