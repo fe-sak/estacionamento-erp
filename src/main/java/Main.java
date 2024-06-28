@@ -1,3 +1,4 @@
+
 import Classes.*;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
@@ -5,6 +6,7 @@ import java.util.Arrays;
 import java.util.Scanner;
 
 public class Main {
+
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
         Estacionamento estacionamento = new Estacionamento();
@@ -34,6 +36,9 @@ public class Main {
     private static void executarOperacao(String operacao, Scanner scanner, Estacionamento estacionamento) throws Exception {
         switch (operacao) {
             case "1": {
+                
+                System.out.flush();
+                
                 System.out.println("Estacionar um veículo foi selecionada");
 
                 System.out.println("Digite o nome do cliente: ");
@@ -41,6 +46,11 @@ public class Main {
 
                 System.out.println("Digite o cpf do cliente: ");
                 String cpfDono = scanner.nextLine();
+
+                while (!Pessoa.validaCPF(cpfDono)) {
+                    System.out.print("CPF inválido.\nDigite o cpf do cliente: ");
+                    cpfDono = scanner.nextLine();
+                }
 
                 System.out.println("Qual o veículo? Digite 1 para carro e 2 para moto: ");
                 String tipoVeiculo = scanner.nextLine();
@@ -52,6 +62,11 @@ public class Main {
 
                 System.out.print("Digite a placa do veículo: ");
                 String placa = scanner.nextLine();
+                
+                while (!Veiculo.validaPlaca(placa)) {
+                    System.out.print("Placa inválida.\nDigite a placa do veículo: ");
+                    placa = scanner.nextLine();
+                }
 
                 System.out.println("Digite a cor do veículo: ");
                 String cor = scanner.nextLine();
@@ -77,9 +92,14 @@ public class Main {
                 veiculo.getCliente().imprimir();
                 veiculo.imprimir();
 
+                System.out.println("Aperte alguma tecla para voltar ao Menu de Operações");
+                String w = scanner.nextLine();
+                System.out.flush();
+
                 break;
             }
             case "2": {
+                System.out.flush();
                 System.out.println("Digite a placa do veículo: ");
                 String placa = scanner.nextLine();
 
@@ -93,19 +113,37 @@ public class Main {
                 System.out.println("\tPermanência total: " + veiculo.getPermanencia() + "h");
                 System.out.println("\tPagamento: R$" + veiculo.getPagamento());
 
+                System.out.println("Aperte alguma tecla para voltar ao Menu de Operações");
+                String w = scanner.nextLine();
+                System.out.flush();
+
                 break;
             }
             case "3": {
-                System.out.println("3");
-                throw new NotImplementedException();
+                System.out.flush();
+                estacionamento.Mostra_Estacionamento();
+                System.out.println("Aperte alguma tecla para voltar ao Menu de Operações");
+                String w = scanner.nextLine();
+                System.out.flush();
+                break;
             }
             case "4": {
-                System.out.println("4");
-                throw new NotImplementedException();
+                System.out.flush();
+                estacionamento.ImprimirRegistros();
+                System.out.println("Aperte alguma tecla para voltar ao Menu de Operações");
+                String w = scanner.nextLine();
+                System.out.flush();
+                break;
             }
             case "5": {
-                System.out.println("5");
-                throw new NotImplementedException();
+                System.out.flush();
+                estacionamento.GerarPDF();
+                System.out.println("Relatório Gerado com sucesso na pasta Auxiliar!");
+                System.out.println("Aperte alguma tecla para voltar ao Menu de Operações");
+                String w = scanner.nextLine();
+                System.out.flush();
+
+                break;
             }
             default: {
                 System.out.println("Operação não reconhecida, tente novamente");
@@ -133,4 +171,5 @@ public class Main {
         System.out.println("5 - Imprimir relatório em pdf");
         System.out.println("6 - Parar o programa");
     }
+
 }
