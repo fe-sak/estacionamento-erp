@@ -1,5 +1,8 @@
 package enums;
 
+import classes.Carro;
+import classes.Moto;
+import classes.Pessoa;
 import classes.Veiculo;
 
 public enum EVeiculo {
@@ -14,5 +17,17 @@ public enum EVeiculo {
 
     public String getNome() {
         return nome;
+    }
+
+    public Veiculo instanciar(String cor, String placa, Pessoa cliente) {
+        switch (this) {
+            case MOTO: {
+                return new Moto(cor, placa, cliente);
+            }
+            case CARRO: {
+                return new Carro(cor, placa, cliente);
+            }
+        }
+        return null;
     }
 }

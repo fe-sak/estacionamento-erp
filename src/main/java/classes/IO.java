@@ -1,7 +1,6 @@
 package classes;
 
 import enums.EOperacao;
-import enums.EVeiculo;
 import org.beryx.textio.TextIO;
 import org.beryx.textio.TextIoFactory;
 

@@ -16,10 +16,6 @@ public enum EOperacao {
         this.nome = nome;
     }
 
-    public int getCodigo() {
-        return codigo;
-    }
-
     public String getNome() {
         return nome;
     }

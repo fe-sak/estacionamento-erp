@@ -1,8 +1,14 @@
 import classes.*;
 import enums.EOperacao;
 import enums.EVeiculo;
+import org.beryx.textio.EnumInputReader;
+import org.beryx.textio.GenericInputReader;
+import org.beryx.textio.InputReader;
 import org.beryx.textio.TextIO;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
+
+import java.nio.charset.StandardCharsets;
+import java.util.Collections;
 
 public class Main {
     public static void main(String[] args) {
@@ -91,26 +97,21 @@ public class Main {
     public static Veiculo coletarVeiculo(TextIO textIO) {
         Pessoa dono = coletarPessoa(textIO);
 
-        EVeiculo tipoVeiculo = textIO.newEnumInputReader(EVeiculo.class).withValueFormatter(EVeiculo::getNome).read("Digite o tipo do veículo: ");
+        EVeiculo tipoVeiculo = textIO.newEnumInputReader(EVeiculo.class).withValueFormatter(EVeiculo::getNome)
+                .withInvalidIndexErrorMessagesProvider((s, s1, i, i1) ->
+                        Collections.singletonList("Opção inválida. Digite um número de " + i + " até " + i1))
+                .read("Digite o tipo do veículo: ", "AA");
 
         String placa = textIO.newStringInputReader().read("Digite a placa do veículo: ");
 
         String cor = textIO.newStringInputReader().read("Digite a cor do veículo: ");
 
-        Veiculo veiculo;
-
-        if (tipoVeiculo == EVeiculo.CARRO) {
-            veiculo = new Carro(cor, placa, dono);
-        } else {
-            veiculo = new Moto(cor, placa, dono);
-        }
-
-        return veiculo;
+        return tipoVeiculo.instanciar(cor, placa, dono);
     }
 
-    private static Pessoa coletarPessoa(TextIO textIO){
-        String nome =  textIO.newStringInputReader().read("Digite o nome do cliente: ");
-        String cpf =  textIO.newStringInputReader().read("Digite o cpf do cliente: ");
+    private static Pessoa coletarPessoa(TextIO textIO) {
+        String nome = textIO.newStringInputReader().read("Digite o nome do cliente: ");
+        String cpf = textIO.newStringInputReader().read("Digite o cpf do cliente: ");
 
         return new Pessoa(nome, cpf);
     }
