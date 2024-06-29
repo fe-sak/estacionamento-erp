@@ -15,7 +15,11 @@ public class ConsoleIO {
     public ConsoleIO() {
         this.textIO = TextIoFactory.getTextIO();
     }
-
+    //printa a mesnagem e se mantem na linha
+    public void printar_2(String message){
+        textIO.getTextTerminal().print(message);
+    }
+    //Printa a mensagem e pula linha
     public void printar(String message) {
         textIO.getTextTerminal().println(message);
     }

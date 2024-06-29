@@ -76,30 +76,32 @@ public class Estacionamento {
         return veiculoRemovido;
     }
 
-    public String printarRegistrosDia() {
+    public String printarRegistrosDia(int dia) {
         StringBuilder sb = new StringBuilder();
 
         for (Veiculo veiculo : registros) {
-            sb.append(veiculo.getCliente().toString()).append("\n");
-            sb.append(veiculo.toString()).append("\n");
-            sb.append("INFORMAÇÕES").append("\n");
-            sb.append("\tHorario de Entrada: ").append(veiculo.getEntradaFormatada()).append("h").append("\n");
-            if (veiculo.getSaida() == null) {
-                sb.append("\tHorario de Saida: Veiculo estacionado").append("\n");
-            } else {
-                sb.append("\tHorário de saída:").append(veiculo.getSaidaFormatada()).append("h").append("\n");
-                sb.append("\tPermanência total: ").append(veiculo.getPermanencia()).append("h").append("\n");
-                sb.append("\tPagamento: R$").append(veiculo.getPagamento()).append("\n");
+            if (veiculo.getEntrada().getDayOfMonth() == dia) {
+                sb.append(veiculo.getCliente().toString()).append("\n");
+                sb.append(veiculo.toString()).append("\n");
+                sb.append("INFORMAÇÕES").append("\n");
+                sb.append("\tHorario de Entrada: ").append(veiculo.getEntradaFormatada()).append("h").append("\n");
+                if (veiculo.getSaida() == null) {
+                    sb.append("\tHorario de Saida: Veiculo estacionado").append("\n");
+                } else {
+                    sb.append("\tHorário de saída:").append(veiculo.getSaidaFormatada()).append("h").append("\n");
+                    sb.append("\tPermanência total: ").append(veiculo.getPermanencia()).append("h").append("\n");
+                    sb.append("\tPagamento: R$").append(veiculo.getPagamento()).append("\n");
+                }
+                sb.append("----------------------------------------------").append("\n");
             }
-            sb.append("----------------------------------------------").append("\n");
         }
 
         return sb.toString();
     }
 
     public void GerarPDF(String opcaoRelatorio) throws FileNotFoundException {
-        String caminho = "./relatorios/" + LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd-MM-yyyy-HH-mm-ss")) +
-                "__relatorio-" + (opcaoRelatorio.equals("1") ? "ativos" : "todos") + ".pdf";
+        String caminho = "./relatorios/" + LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd-MM-yyyy-HH-mm-ss"))
+                + "__relatorio-" + (opcaoRelatorio.equals("1") ? "ativos" : "todos") + ".pdf";
 
         new File("./relatorios").mkdirs();
 
