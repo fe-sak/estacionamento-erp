@@ -1,14 +1,5 @@
 import classes.*;
-import enums.EOperacao;
-import enums.EVeiculo;
-import org.beryx.textio.EnumInputReader;
-import org.beryx.textio.GenericInputReader;
-import org.beryx.textio.InputReader;
-import org.beryx.textio.TextIO;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
-
-import java.nio.charset.StandardCharsets;
-import java.util.Collections;
 
 public class Main {
     public static void main(String[] args) {
@@ -59,16 +50,28 @@ public class Main {
                 break;
             }
             case PRINTAR_ESTACIONAMENTO: {
-                System.out.println("3");
-                throw new NotImplementedException();
+                System.out.flush();
+                estacionamento.Mostra_Estacionamento();
+                System.out.println("Aperte alguma tecla para voltar ao Menu de Operações");
+                String w = scanner.nextLine();
+                System.out.flush();
+                break;
             }
             case PRINTAR_REGISTROS_DO_DIA: {
-                System.out.println("4");
-                throw new NotImplementedException();
+                System.out.flush();
+                estacionamento.ImprimirRegistros();
+                System.out.println("Aperte alguma tecla para voltar ao Menu de Operações");
+                String w = scanner.nextLine();
+                System.out.flush();
+                break;
             }
             case PRINTAR_RELATORIO: {
-                System.out.println("5");
-                throw new NotImplementedException();
+                System.out.flush();
+                estacionamento.GerarPDF();
+                System.out.println("Relatório Gerado com sucesso na pasta Auxiliar!");
+                System.out.println("Aperte alguma tecla para voltar ao Menu de Operações");
+                String w = scanner.nextLine();
+                System.out.flush();
             }
         }
     }

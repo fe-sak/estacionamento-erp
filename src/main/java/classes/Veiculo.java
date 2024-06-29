@@ -5,8 +5,11 @@ import java.math.RoundingMode;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public abstract class Veiculo {
+
     String cor;
     String placa;
     Pessoa cliente;
@@ -81,4 +84,20 @@ public abstract class Veiculo {
     public String getPagamento() {
         return (BigDecimal.valueOf(getPermanencia()).multiply(getTaxaHora()).setScale(2, RoundingMode.HALF_DOWN)).toString();
     }
+
+    public static boolean validaPlaca(String placa) {
+        boolean result;
+
+        Pattern pattern = Pattern.compile("[A-Z]{3}\\d{4}$");
+        Matcher mat = pattern.matcher(placa);
+        if (!mat.matches()) {
+            result = false;
+        } else {
+            result = true;
+
+        }
+        return result;
+
+    }
+
 }
