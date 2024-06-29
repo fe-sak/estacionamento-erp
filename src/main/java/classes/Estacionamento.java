@@ -106,19 +106,19 @@ public class Estacionamento {
         PdfWriter writer = new PdfWriter(caminho);
         PdfDocument pdf = new PdfDocument(writer);
         Document document = new Document(pdf);
-
+    
         document.setTextAlignment(TextAlignment.CENTER);
         document.add(new Paragraph("RELATÓRIO"));
 
         if ("1".equals(opcaoRelatorio)) {
             document.add(new Paragraph("TODOS OS VEICULOS ATIVOS")).setTextAlignment(TextAlignment.LEFT);
-
+                
             for (Veiculo veiculo : veiculosEstacionados) {
                 if (veiculo != null) {
                     document.add(new Paragraph("                                                                                                                                                ")).setFontSize(10).setMargins(0, 0, 0, 0);
-
+                    
                     document.add(new Paragraph("CLIENTE")).setFontSize(8).setMargins(0, 0, 0, 0);
-
+                    
                     document.add(new Paragraph("NOME: " + veiculo.getCliente().getNome() + "     DOCUMENTO: " + veiculo.getCliente().getCpf())).setFontSize(10).setMargins(0, 0, 0, 0);
                     document.add(new Paragraph("VEICULO")).setFontSize(8).setMargins(0, 0, 0, 0);
 
@@ -132,7 +132,7 @@ public class Estacionamento {
                     document.add(new Paragraph("----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------"));
                 }
             }
-
+            
         } else if ("2".equals(opcaoRelatorio)) {
             document.setTextAlignment(TextAlignment.CENTER);
             document.add(new Paragraph("TODOS OS VEICULOS")).setTextAlignment(TextAlignment.LEFT);
@@ -141,13 +141,13 @@ public class Estacionamento {
                 if (veiculo != null) {
                     document.add(new Paragraph("                                                                                                                                                ")).setFontSize(10).setMargins(0, 0, 0, 0);
                     document.add(new Paragraph("CLIENTE")).setFontSize(8).setMargins(0, 0, 0, 0);
-
+                    
                     document.add(new Paragraph("NOME: " + veiculo.getCliente().getNome() + "     DOCUMENTO: " + veiculo.getCliente().getCpf())).setFontSize(10).setMargins(0, 0, 0, 0);
                     document.add(new Paragraph("VEICULO")).setFontSize(8).setMargins(0, 0, 0, 0);
-
+                    
                     document.add(new Paragraph("PLACA: " + veiculo.getPlaca() + "           TIPO: " + veiculo.getClass().getSimpleName())).setFontSize(8).setMargins(0, 0, 0, 0);
                     document.add(new Paragraph("COR: " + veiculo.getCor())).setFontSize(8).setMargins(0, 0, 0, 0);
-
+                    
                     if (veiculo.getSaida() == null) {
                         document.add(new Paragraph("DATA DE ENTRADA: " + veiculo.getEntradaFormatada() + "h")).setFontSize(8);
                         document.add(new Paragraph("DATA DE SAIDA: VEICULO AINDA ESTACIONADO")).setFontSize(8);
@@ -163,7 +163,7 @@ public class Estacionamento {
                 }
             }
         }
-
+        
         document.close();
     }
 }

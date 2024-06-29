@@ -1,13 +1,16 @@
+
 import classes.*;
 import enums.EOperacao;
 import enums.EVeiculo;
 import org.beryx.textio.TextIO;
 
 import java.awt.*;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
 public class Main {
+
     public static void main(String[] args) {
         ConsoleIO consoleio = new ConsoleIO();
 
@@ -136,6 +139,7 @@ public class Main {
                 consoleio.printar(registros);
                 break;
             }
+
             case PRINTAR_RELATORIO: {
                 consoleio.printarInfo(EOperacao.getNome() + " foi selecionada");
 
@@ -176,26 +180,115 @@ public class Main {
     }
 
     public static void printarEstacionamento(ConsoleIO consoleio, Estacionamento estacionamento) {
-        for (int i = 0; i < estacionamento.getVeiculosEstacionados().size(); i++) {
-            consoleio.printar("-----------");
+
+        java.util.List<String> status_vaga = new ArrayList<>(8);
+        int i;
+
+        for (i = 0; i < estacionamento.getVeiculosEstacionados().size(); i++) {
 
             if (estacionamento.getVeiculosEstacionados().get(i) != null) {
                 int vaga = i + 1;
-                consoleio.getTextIO().getTextTerminal()
-                        .executeWithPropertiesConfigurator(props -> props
-                                .setPromptColor(Color.WHITE), t ->
-                                t.println("//VAGA 0" + vaga + "//\n//OCUPADO//\n//" + estacionamento.getVeiculosEstacionados().get(vaga - 1).getPlaca() + "/"));
+                status_vaga.add("OCUPADO");
 
             }
 
             if (estacionamento.getVeiculosEstacionados().get(i) == null) {
                 int vaga = i + 1;
 
-                consoleio.getTextIO().getTextTerminal()
-                        .executeWithPropertiesConfigurator(props -> props
-                                .setPromptColor(Color.lightGray), t ->
-                                t.println("//VAGA 0" + vaga + "\n///LIVRE///\n///////////"));
+                status_vaga.add("-LIVRE-");
             }
         }
+        consoleio.printar("///-1-//////////////-2-//////////////-3-//////////////-4-//////");
+        consoleio.printar_2("/");
+        
+        for (i = 0; i <= 3; i++) {
+            int local = i;
+            if ("OCUPADO".equals(status_vaga.get(i))) {
+                consoleio.getTextIO().getTextTerminal()
+                        .executeWithPropertiesConfigurator(props -> props
+                        .setPromptColor(Color.RED), t
+                                -> t.print(status_vaga.get(local)));
+              
+        } else {
+             consoleio.getTextIO().getTextTerminal()
+                        .executeWithPropertiesConfigurator(props -> props
+                        .setPromptColor(Color.GREEN), t
+                                -> t.print(status_vaga.get(local)));
+        }
+            if (i < 3) {
+                consoleio.printar_2("//////////");
+            }
+        }
+        consoleio.printar_2("////");
+        consoleio.printar("");
+        
+        consoleio.printar_2("/");
+        for (i = 0; i <= 3; i++) {
+            int local = i;
+            if ("OCUPADO".equals(status_vaga.get(i))) {
+                consoleio.getTextIO().getTextTerminal()
+                        .executeWithPropertiesConfigurator(props -> props
+                        .setPromptColor(Color.RED), t
+                                -> t.print(status_vaga.get(local)));
+              
+        } else {
+             consoleio.getTextIO().getTextTerminal()
+                        .executeWithPropertiesConfigurator(props -> props
+                        .setPromptColor(Color.GREEN), t
+                                -> t.print(status_vaga.get(local)));
+        }
+            if (i < 3) {
+                consoleio.printar_2("//////////");
+            }
+        }
+        consoleio.printar_2("////");
+        consoleio.printar("");
+        consoleio.printar("///////////////////////////////////////////////////////////////");
+        consoleio.printar("///-5-//////////////-6-//////////////-7-//////////////-8-//////");
+        consoleio.printar_2("/");
+        for (i = 4; i <= 7; i++) {
+            int local = i;
+            if ("OCUPADO".equals(status_vaga.get(i))) {
+                consoleio.getTextIO().getTextTerminal()
+                        .executeWithPropertiesConfigurator(props -> props
+                        .setPromptColor(Color.RED), t
+                                -> t.print(status_vaga.get(local)));
+              
+        } else {
+             consoleio.getTextIO().getTextTerminal()
+                        .executeWithPropertiesConfigurator(props -> props
+                        .setPromptColor(Color.GREEN), t
+                                -> t.print(status_vaga.get(local)));
+        }
+            if (i < 7) {
+                consoleio.printar_2("//////////");
+            }
+        }
+        consoleio.printar_2("////");
+        consoleio.printar("");
+        consoleio.printar_2("/");
+        for (i = 4; i <= 7; i++) {
+            int local = i;
+            if ("OCUPADO".equals(status_vaga.get(i))) {
+                consoleio.getTextIO().getTextTerminal()
+                        .executeWithPropertiesConfigurator(props -> props
+                        .setPromptColor(Color.RED), t
+                                -> t.print(status_vaga.get(local)));
+              
+        } else {
+             consoleio.getTextIO().getTextTerminal()
+                        .executeWithPropertiesConfigurator(props -> props
+                        .setPromptColor(Color.GREEN), t
+                                -> t.print(status_vaga.get(local)));
+        }
+            if (i < 7) {
+                consoleio.printar_2("//////////");
+            }
+        }
+        consoleio.printar_2("////");
+        consoleio.printar("");
+        consoleio.printar("///////////////////////////////////////////////////////////////");
+
     }
+
 }
