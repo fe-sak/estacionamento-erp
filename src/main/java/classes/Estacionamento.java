@@ -11,17 +11,19 @@ import com.itextpdf.layout.Document;
 import com.itextpdf.layout.element.Paragraph;
 import com.itextpdf.layout.properties.TextAlignment;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
-import java.util.Scanner;
 
 public class Estacionamento {
 
     private final List<Veiculo> veiculosEstacionados = Arrays.asList(new Veiculo[8]);
-    private final List<Veiculo> registro_geral = new ArrayList<>();
+    private final List<Veiculo> registros = new ArrayList<>();
 
     public List<Veiculo> getVeiculosEstacionados() {
         return veiculosEstacionados;
@@ -31,8 +33,8 @@ public class Estacionamento {
         int vaga = -1;
         for (int i = 0; i < veiculosEstacionados.size(); i++) {
             if (veiculosEstacionados.get(i) != null) {
-                if (Objects.equals(veiculosEstacionados.get(i).placa, veiculo.placa)) {
-                    throw new VeiculoJaEstacionado("O veiculo de placa " + veiculo.placa + " já está estacionado.");
+                if (Objects.equals(veiculosEstacionados.get(i).getPlaca(), veiculo.getPlaca())) {
+                    throw new VeiculoJaEstacionado("O veiculo de placa " + veiculo.getPlaca() + " já está estacionado.");
                 }
             }
 
@@ -47,16 +49,16 @@ public class Estacionamento {
         }
 
         veiculosEstacionados.set(vaga, veiculo);
-        registro_geral.add(veiculo);
+        registros.add(veiculo);
 
         return vaga + 1;
     }
 
-    public Veiculo tirarVeiculo(String placa) throws VeiculoNaoEncontrado {
+    public Veiculo retirarVeiculo(String placa) throws VeiculoNaoEncontrado {
         int vagaLiberada = -1;
         for (int i = 0; i < veiculosEstacionados.size(); i++) {
             if (veiculosEstacionados.get(i) != null) {
-                if (Objects.equals(veiculosEstacionados.get(i).placa, placa)) {
+                if (Objects.equals(veiculosEstacionados.get(i).getPlaca(), placa.toUpperCase())) {
                     vagaLiberada = i;
                     break;
                 }
@@ -74,129 +76,94 @@ public class Estacionamento {
         return veiculoRemovido;
     }
 
-    public void ImprimirRegistros() {
+    public String printarRegistrosDia() {
+        StringBuilder sb = new StringBuilder();
 
-        for (Veiculo veiculo : registro_geral) {
-            veiculo.getCliente().imprimir();
-            veiculo.imprimir();
-            System.out.println("\tINFORMAÇÕES");
-            System.out.println("\tHorario de Entrada: " + veiculo.getEntradaFormatada() + "h");
+        for (Veiculo veiculo : registros) {
+            sb.append(veiculo.getCliente().toString()).append("\n");
+            sb.append(veiculo.toString()).append("\n");
+            sb.append("INFORMAÇÕES").append("\n");
+            sb.append("\tHorario de Entrada: ").append(veiculo.getEntradaFormatada()).append("h").append("\n");
             if (veiculo.getSaida() == null) {
-                System.out.println("Horario de Saida: Veiculo Ativo no Estacionamento!");
+                sb.append("\tHorario de Saida: Veiculo estacionado").append("\n");
             } else {
-                System.out.println("\tHorário de saída:" + veiculo.getSaidaFormatada() + "h");
-                System.out.println("\tPermanência total: " + veiculo.getPermanencia() + "h");
-                System.out.println("\tPagamento: R$" + veiculo.getPagamento());
+                sb.append("\tHorário de saída:").append(veiculo.getSaidaFormatada()).append("h").append("\n");
+                sb.append("\tPermanência total: ").append(veiculo.getPermanencia()).append("h").append("\n");
+                sb.append("\tPagamento: R$").append(veiculo.getPagamento()).append("\n");
             }
-            System.out.println("----------------------------------------------");
+            sb.append("----------------------------------------------").append("\n");
         }
 
-    }
-    
-    public void Mostra_Estacionamento(){
-        
-        for (int i = 0; i < veiculosEstacionados.size(); i++) {
-            System.out.println("-----------");
-            if (veiculosEstacionados.get(i) != null) {
-                System.out.println("///////////");
-                System.out.println(i+1 + "//OCUPADO/");
-                System.out.println("///////////");
-                
-            }
-
-            if (veiculosEstacionados.get(i) == null) {
-                System.out.println("///////////");
-                System.out.println(i+1 + "//LIVRE///");
-                System.out.println("///////////");
-            }
-        }
+        return sb.toString();
     }
 
-    public void GerarPDF() {
-        String dest = "C:\\Users\\moise\\Desktop\\Nova pasta (2)\\estacionamento-erp\\Auxiliar\\example.pdf";
-        Scanner scanner = new Scanner(System.in);
+    public void GerarPDF(String opcaoRelatorio) throws FileNotFoundException {
+        String caminho = "./relatorios/" + LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd-MM-yyyy-HH-mm-ss")) +
+                "__relatorio-" + (opcaoRelatorio.equals("1") ? "ativos" : "todos") + ".pdf";
 
-        try {
-            PdfWriter writer = new PdfWriter(dest);
+        new File("./relatorios").mkdirs();
 
-            PdfDocument pdf = new PdfDocument(writer);
+        PdfWriter writer = new PdfWriter(caminho);
+        PdfDocument pdf = new PdfDocument(writer);
+        Document document = new Document(pdf);
 
-            Document document = new Document(pdf);
+        document.setTextAlignment(TextAlignment.CENTER);
+        document.add(new Paragraph("RELATÓRIO"));
 
+        if ("1".equals(opcaoRelatorio)) {
+            document.add(new Paragraph("TODOS OS VEICULOS ATIVOS")).setTextAlignment(TextAlignment.LEFT);
+
+            for (Veiculo veiculo : veiculosEstacionados) {
+                if (veiculo != null) {
+                    document.add(new Paragraph("                                                                                                                                                ")).setFontSize(10).setMargins(0, 0, 0, 0);
+
+                    document.add(new Paragraph("CLIENTE")).setFontSize(8).setMargins(0, 0, 0, 0);
+
+                    document.add(new Paragraph("NOME: " + veiculo.getCliente().getNome() + "     DOCUMENTO: " + veiculo.getCliente().getCpf())).setFontSize(10).setMargins(0, 0, 0, 0);
+                    document.add(new Paragraph("VEICULO")).setFontSize(8).setMargins(0, 0, 0, 0);
+
+                    document.add(new Paragraph("PLACA: " + veiculo.getPlaca() + "           TIPO: " + veiculo.getClass().getSimpleName())).setFontSize(8).setMargins(0, 0, 0, 0);
+                    document.add(new Paragraph("COR: " + veiculo.getCor())).setFontSize(8).setMargins(0, 0, 0, 0);
+
+                    document.add(new Paragraph("DATA DE ENTRADA: " + veiculo.getEntradaFormatada() + "h")).setFontSize(8);
+
+                    document.add(new Paragraph("DATA DE SAIDA: VEICULO AINDA ESTACIONADO")).setFontSize(8);
+                    document.add(new Paragraph("                                                                                                                                                "));
+                    document.add(new Paragraph("----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------"));
+                }
+            }
+
+        } else if ("2".equals(opcaoRelatorio)) {
             document.setTextAlignment(TextAlignment.CENTER);
-            document.add(new Paragraph("RELATÓRIO"));;
+            document.add(new Paragraph("TODOS OS VEICULOS")).setTextAlignment(TextAlignment.LEFT);
 
-            System.out.println("Qual o Relatorio deseja gerar? Digite 1 para Apenas Registros Ativos e 2 para Todos os Regitros: ");
-            String opcao_relatorio = scanner.nextLine();
+            for (Veiculo veiculo : registros) {
+                if (veiculo != null) {
+                    document.add(new Paragraph("                                                                                                                                                ")).setFontSize(10).setMargins(0, 0, 0, 0);
+                    document.add(new Paragraph("CLIENTE")).setFontSize(8).setMargins(0, 0, 0, 0);
 
-            while (!Arrays.asList(new String[]{"1", "2"}).contains(opcao_relatorio)) {
-                System.out.print("Opcao inválida.\nDigite 1 para Apenas Registros Ativos e 2 para Todos os Registros: ");
-                opcao_relatorio = scanner.nextLine();
-            }
+                    document.add(new Paragraph("NOME: " + veiculo.getCliente().getNome() + "     DOCUMENTO: " + veiculo.getCliente().getCpf())).setFontSize(10).setMargins(0, 0, 0, 0);
+                    document.add(new Paragraph("VEICULO")).setFontSize(8).setMargins(0, 0, 0, 0);
 
-            if ("1".equals(opcao_relatorio)) {
-                document.add(new Paragraph("TODOS OS VEICULOS ATIVOS")).setTextAlignment(TextAlignment.LEFT);
+                    document.add(new Paragraph("PLACA: " + veiculo.getPlaca() + "           TIPO: " + veiculo.getClass().getSimpleName())).setFontSize(8).setMargins(0, 0, 0, 0);
+                    document.add(new Paragraph("COR: " + veiculo.getCor())).setFontSize(8).setMargins(0, 0, 0, 0);
 
-                for (Veiculo veiculo : veiculosEstacionados) {
-                    if (veiculo != null) {
-                        document.add(new Paragraph("                                                                                                                                                ")).setFontSize(10).setMargins(0, 0, 0, 0);;
-                        document.add(new Paragraph("CLIENTE")).setFontSize(8).setMargins(0, 0, 0, 0);
-
-                        document.add(new Paragraph("NOME: " + veiculo.getCliente().getNome() + "     DOCUMENTO: " + veiculo.getCliente().getCpf())).setFontSize(10).setMargins(0, 0, 0, 0);
-                        document.add(new Paragraph("VEICULO")).setFontSize(8).setMargins(0, 0, 0, 0);
-
-                        document.add(new Paragraph("PLACA: " + veiculo.getPlaca() + "           TIPO: " + veiculo.getClass().getSimpleName())).setFontSize(8).setMargins(0, 0, 0, 0);
-                        document.add(new Paragraph("COR: " + veiculo.getCor())).setFontSize(8).setMargins(0, 0, 0, 0);
-
+                    if (veiculo.getSaida() == null) {
                         document.add(new Paragraph("DATA DE ENTRADA: " + veiculo.getEntradaFormatada() + "h")).setFontSize(8);
-
                         document.add(new Paragraph("DATA DE SAIDA: VEICULO AINDA ESTACIONADO")).setFontSize(8);
+                    } else {
+                        document.add(new Paragraph("DATA DE ENTRADA: " + veiculo.getEntradaFormatada() + "h")).setFontSize(8);
+                        document.add(new Paragraph("DATA DE SAIDA: " + veiculo.getSaidaFormatada() + "h")).setFontSize(8);
+                        document.add(new Paragraph("TAXA: " + veiculo.getPagamento())).setFontSize(8);
+                        document.add(new Paragraph("PERMANENCIA: " + veiculo.getPermanencia() + "h")).setFontSize(8);
+
                         document.add(new Paragraph("                                                                                                                                                "));
-                        document.add(new Paragraph("----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------"));
-
                     }
-
-                }
-
-            } else if ("2".equals(opcao_relatorio)) {
-                document.setTextAlignment(TextAlignment.CENTER);
-                document.add(new Paragraph("TODOS OS VEICULOS")).setTextAlignment(TextAlignment.LEFT);;
-
-                for (Veiculo veiculo : registro_geral) {
-                    if (veiculo != null) {
-                        document.add(new Paragraph("                                                                                                                                                ")).setFontSize(10).setMargins(0, 0, 0, 0);
-                        document.add(new Paragraph("CLIENTE")).setFontSize(8).setMargins(0, 0, 0, 0);
-
-                        document.add(new Paragraph("NOME: " + veiculo.getCliente().getNome() + "     DOCUMENTO: " + veiculo.getCliente().getCpf())).setFontSize(10).setMargins(0, 0, 0, 0);
-                        document.add(new Paragraph("VEICULO")).setFontSize(8).setMargins(0, 0, 0, 0);
-
-                        document.add(new Paragraph("PLACA: " + veiculo.getPlaca() + "           TIPO: " + veiculo.getClass().getSimpleName())).setFontSize(8).setMargins(0, 0, 0, 0);
-                        document.add(new Paragraph("COR: " + veiculo.getCor())).setFontSize(8).setMargins(0, 0, 0, 0);
-
-                        if (veiculo.getSaida() == null) {
-                            document.add(new Paragraph("DATA DE ENTRADA: " + veiculo.getEntradaFormatada() + "h")).setFontSize(8);
-                            document.add(new Paragraph("DATA DE SAIDA: VEICULO AINDA ESTACIONADO")).setFontSize(8);
-                        } else {
-                            document.add(new Paragraph("DATA DE ENTRADA: " + veiculo.getEntradaFormatada() + "h")).setFontSize(8);
-                            document.add(new Paragraph("DATA DE SAIDA: " + veiculo.getSaidaFormatada() + "h")).setFontSize(8);
-                            document.add(new Paragraph("TAXA: " + veiculo.getPagamento())).setFontSize(8);
-                            document.add(new Paragraph("PERMANENCIA: " + veiculo.getPermanencia() + "h")).setFontSize(8);
-
-                            document.add(new Paragraph("                                                                                                                                                "));
-
-                        }
-                        document.add(new Paragraph("----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------"));
-                    }
-
+                    document.add(new Paragraph("----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------"));
                 }
             }
-
-            document.close();
-
-            System.out.println("PDF criado com sucesso!");
-
-        } catch (Exception e) {
-            e.printStackTrace();
         }
+
+        document.close();
     }
 }

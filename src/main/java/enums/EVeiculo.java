@@ -6,17 +6,19 @@ import classes.Pessoa;
 import classes.Veiculo;
 
 public enum EVeiculo {
-    MOTO("Moto"),
-    CARRO("Carro");
+    MOTO(1, "Moto"),
+    CARRO(2, "Carro");
 
     private final String nome;
+    private final int codigo;
 
-    EVeiculo(String nome) {
+    EVeiculo(int codigo, String nome) {
+        this.codigo = codigo;
         this.nome = nome;
     }
 
-    public String getNome() {
-        return nome;
+    public int getCodigo() {
+        return codigo;
     }
 
     public Veiculo instanciar(String cor, String placa, Pessoa cliente) {
@@ -29,5 +31,12 @@ public enum EVeiculo {
             }
         }
         return null;
+    }
+
+    public static EVeiculo escolher(Integer codigo) {
+        if (codigo == 1) {
+            return MOTO;
+        }
+        return CARRO;
     }
 }

@@ -5,24 +5,23 @@ import java.math.RoundingMode;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public abstract class Veiculo {
 
-    String cor;
-    String placa;
-    Pessoa cliente;
-    BigDecimal taxaHora;
-    LocalDateTime entrada;
-    LocalDateTime saida;
+    private String cor;
+    private final String placa;
+    private Pessoa cliente;
+    private BigDecimal taxaHora;
+    private LocalDateTime entrada;
+    private LocalDateTime saida;
 
     public String getCor() {
         return cor;
     }
 
     public String getPlaca() {
-        return placa;
+        return placa.toUpperCase();
     }
 
     public Pessoa getCliente() {
@@ -82,22 +81,13 @@ public abstract class Veiculo {
     }
 
     public String getPagamento() {
-        return (BigDecimal.valueOf(getPermanencia()).multiply(getTaxaHora()).setScale(2, RoundingMode.HALF_DOWN)).toString();
+        long permanenciaMinima = getPermanencia() > 1 ? getPermanencia() : 1L;
+
+        return (BigDecimal.valueOf(permanenciaMinima).multiply(getTaxaHora()).setScale(2, RoundingMode.HALF_DOWN)).toString();
     }
 
-    public static boolean validaPlaca(String placa) {
-        boolean result;
-
-        Pattern pattern = Pattern.compile("[A-Z]{3}\\d{4}$");
-        Matcher mat = pattern.matcher(placa);
-        if (!mat.matches()) {
-            result = false;
-        } else {
-            result = true;
-
-        }
-        return result;
-
+    public static boolean validarPlaca(String placa) {
+        Pattern pattern = Pattern.compile("[A-Z]{3}-\\d{4}$");
+        return pattern.matcher(placa.toUpperCase()).matches();
     }
-
 }
