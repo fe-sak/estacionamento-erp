@@ -24,7 +24,7 @@ public enum EOperacao {
     }
 
     public static List<String> listar() {
-        return Arrays.stream(EOperacao.values()).map(o -> " " + o.codigo + " :" + o.nome).collect(Collectors.toList());
+        return Arrays.stream(EOperacao.values()).map(o -> " " + o.codigo + ": " + o.nome).collect(Collectors.toList());
     }
 
     public static EOperacao escolher(Integer codigo) {
