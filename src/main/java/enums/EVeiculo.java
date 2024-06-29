@@ -35,8 +35,8 @@ public enum EVeiculo {
 
     public static EVeiculo escolher(Integer codigo) {
         if (codigo == 1) {
-            return MOTO;
+            return CARRO;
         }
-        return CARRO;
+        return MOTO;
     }
 }
