@@ -76,49 +76,51 @@ public class Estacionamento {
         return veiculoRemovido;
     }
 
-    public String printarRegistrosDia() {
+    public String printarRegistrosDia(int dia) {
         StringBuilder sb = new StringBuilder();
 
         for (Veiculo veiculo : registros) {
-            sb.append(veiculo.getCliente().toString()).append("\n");
-            sb.append(veiculo.toString()).append("\n");
-            sb.append("INFORMAÇÕES").append("\n");
-            sb.append("\tHorario de Entrada: ").append(veiculo.getEntradaFormatada()).append("h").append("\n");
-            if (veiculo.getSaida() == null) {
-                sb.append("\tHorario de Saida: Veiculo estacionado").append("\n");
-            } else {
-                sb.append("\tHorário de saída:").append(veiculo.getSaidaFormatada()).append("h").append("\n");
-                sb.append("\tPermanência total: ").append(veiculo.getPermanencia()).append("h").append("\n");
-                sb.append("\tPagamento: R$").append(veiculo.getPagamento()).append("\n");
+            if (veiculo.getEntrada().getDayOfMonth() == dia) {
+                sb.append(veiculo.getCliente().toString()).append("\n");
+                sb.append(veiculo.toString()).append("\n");
+                sb.append("INFORMAÇÕES").append("\n");
+                sb.append("\tHorario de Entrada: ").append(veiculo.getEntradaFormatada()).append("h").append("\n");
+                if (veiculo.getSaida() == null) {
+                    sb.append("\tHorario de Saida: Veiculo estacionado").append("\n");
+                } else {
+                    sb.append("\tHorário de saída:").append(veiculo.getSaidaFormatada()).append("h").append("\n");
+                    sb.append("\tPermanência total: ").append(veiculo.getPermanencia()).append("h").append("\n");
+                    sb.append("\tPagamento: R$").append(veiculo.getPagamento()).append("\n");
+                }
+                sb.append("----------------------------------------------").append("\n");
             }
-            sb.append("----------------------------------------------").append("\n");
         }
 
         return sb.toString();
     }
 
     public void GerarPDF(String opcaoRelatorio) throws FileNotFoundException {
-        String caminho = "./relatorios/" + LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd-MM-yyyy-HH-mm-ss")) +
-                "__relatorio-" + (opcaoRelatorio.equals("1") ? "ativos" : "todos") + ".pdf";
+        String caminho = "./relatorios/" + LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd-MM-yyyy-HH-mm-ss"))
+                + "__relatorio-" + (opcaoRelatorio.equals("1") ? "ativos" : "todos") + ".pdf";
 
         new File("./relatorios").mkdirs();
 
         PdfWriter writer = new PdfWriter(caminho);
         PdfDocument pdf = new PdfDocument(writer);
         Document document = new Document(pdf);
-    
+
         document.setTextAlignment(TextAlignment.CENTER);
         document.add(new Paragraph("RELATÓRIO"));
 
         if ("1".equals(opcaoRelatorio)) {
             document.add(new Paragraph("TODOS OS VEICULOS ATIVOS")).setTextAlignment(TextAlignment.LEFT);
-                
+
             for (Veiculo veiculo : veiculosEstacionados) {
                 if (veiculo != null) {
                     document.add(new Paragraph("                                                                                                                                                ")).setFontSize(10).setMargins(0, 0, 0, 0);
-                    
+
                     document.add(new Paragraph("CLIENTE")).setFontSize(8).setMargins(0, 0, 0, 0);
-                    
+
                     document.add(new Paragraph("NOME: " + veiculo.getCliente().getNome() + "     DOCUMENTO: " + veiculo.getCliente().getCpf())).setFontSize(10).setMargins(0, 0, 0, 0);
                     document.add(new Paragraph("VEICULO")).setFontSize(8).setMargins(0, 0, 0, 0);
 
@@ -132,7 +134,7 @@ public class Estacionamento {
                     document.add(new Paragraph("----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------"));
                 }
             }
-            
+
         } else if ("2".equals(opcaoRelatorio)) {
             document.setTextAlignment(TextAlignment.CENTER);
             document.add(new Paragraph("TODOS OS VEICULOS")).setTextAlignment(TextAlignment.LEFT);
@@ -141,13 +143,13 @@ public class Estacionamento {
                 if (veiculo != null) {
                     document.add(new Paragraph("                                                                                                                                                ")).setFontSize(10).setMargins(0, 0, 0, 0);
                     document.add(new Paragraph("CLIENTE")).setFontSize(8).setMargins(0, 0, 0, 0);
-                    
+
                     document.add(new Paragraph("NOME: " + veiculo.getCliente().getNome() + "     DOCUMENTO: " + veiculo.getCliente().getCpf())).setFontSize(10).setMargins(0, 0, 0, 0);
                     document.add(new Paragraph("VEICULO")).setFontSize(8).setMargins(0, 0, 0, 0);
-                    
+
                     document.add(new Paragraph("PLACA: " + veiculo.getPlaca() + "           TIPO: " + veiculo.getClass().getSimpleName())).setFontSize(8).setMargins(0, 0, 0, 0);
                     document.add(new Paragraph("COR: " + veiculo.getCor())).setFontSize(8).setMargins(0, 0, 0, 0);
-                    
+
                     if (veiculo.getSaida() == null) {
                         document.add(new Paragraph("DATA DE ENTRADA: " + veiculo.getEntradaFormatada() + "h")).setFontSize(8);
                         document.add(new Paragraph("DATA DE SAIDA: VEICULO AINDA ESTACIONADO")).setFontSize(8);
@@ -163,7 +165,7 @@ public class Estacionamento {
                 }
             }
         }
-        
+
         document.close();
     }
 }

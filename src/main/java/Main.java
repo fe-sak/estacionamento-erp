@@ -128,7 +128,17 @@ public class Main {
             case PRINTAR_REGISTROS_DO_DIA: {
                 consoleio.printarInfo(EOperacao.getNome() + " foi selecionada");
 
-                String registros = estacionamento.printarRegistrosDia();
+                String opcao_d = consoleio.getTextIO().newStringInputReader().read("Informe o dia que deseja visualizar: ");
+                
+                int opcao_dia = Integer.parseInt(opcao_d);
+                
+                while (opcao_dia > 31 || opcao_dia < 1) {     
+                    consoleio.printarErro("Valor inválido, informe um dia Valido");
+                    opcao_d = consoleio.getTextIO().newStringInputReader().read("Informe o dia que deseja visualizar: ");
+                    opcao_dia = Integer.parseInt(opcao_d);
+                }
+                
+                String registros = estacionamento.printarRegistrosDia(opcao_dia);
 
                 if (registros.trim().isEmpty()) {
                     consoleio.printarSucesso("Não houveram registros no dia.");
@@ -137,6 +147,7 @@ public class Main {
 
                 consoleio.printarSucesso("Registros do dia: ");
                 consoleio.printar(registros);
+                
                 break;
             }
 
@@ -200,7 +211,7 @@ public class Main {
         }
         consoleio.printar("///-1-//////////////-2-//////////////-3-//////////////-4-//////");
         consoleio.printar_2("/");
-        
+
         for (i = 0; i <= 3; i++) {
             int local = i;
             if ("OCUPADO".equals(status_vaga.get(i))) {
@@ -208,20 +219,20 @@ public class Main {
                         .executeWithPropertiesConfigurator(props -> props
                         .setPromptColor(Color.RED), t
                                 -> t.print(status_vaga.get(local)));
-              
-        } else {
-             consoleio.getTextIO().getTextTerminal()
+
+            } else {
+                consoleio.getTextIO().getTextTerminal()
                         .executeWithPropertiesConfigurator(props -> props
                         .setPromptColor(Color.GREEN), t
                                 -> t.print(status_vaga.get(local)));
-        }
+            }
             if (i < 3) {
                 consoleio.printar_2("//////////");
             }
         }
         consoleio.printar_2("////");
         consoleio.printar("");
-        
+
         consoleio.printar_2("/");
         for (i = 0; i <= 3; i++) {
             int local = i;
@@ -230,13 +241,13 @@ public class Main {
                         .executeWithPropertiesConfigurator(props -> props
                         .setPromptColor(Color.RED), t
                                 -> t.print(status_vaga.get(local)));
-              
-        } else {
-             consoleio.getTextIO().getTextTerminal()
+
+            } else {
+                consoleio.getTextIO().getTextTerminal()
                         .executeWithPropertiesConfigurator(props -> props
                         .setPromptColor(Color.GREEN), t
                                 -> t.print(status_vaga.get(local)));
-        }
+            }
             if (i < 3) {
                 consoleio.printar_2("//////////");
             }
@@ -253,13 +264,13 @@ public class Main {
                         .executeWithPropertiesConfigurator(props -> props
                         .setPromptColor(Color.RED), t
                                 -> t.print(status_vaga.get(local)));
-              
-        } else {
-             consoleio.getTextIO().getTextTerminal()
+
+            } else {
+                consoleio.getTextIO().getTextTerminal()
                         .executeWithPropertiesConfigurator(props -> props
                         .setPromptColor(Color.GREEN), t
                                 -> t.print(status_vaga.get(local)));
-        }
+            }
             if (i < 7) {
                 consoleio.printar_2("//////////");
             }
@@ -274,13 +285,13 @@ public class Main {
                         .executeWithPropertiesConfigurator(props -> props
                         .setPromptColor(Color.RED), t
                                 -> t.print(status_vaga.get(local)));
-              
-        } else {
-             consoleio.getTextIO().getTextTerminal()
+
+            } else {
+                consoleio.getTextIO().getTextTerminal()
                         .executeWithPropertiesConfigurator(props -> props
                         .setPromptColor(Color.GREEN), t
                                 -> t.print(status_vaga.get(local)));
-        }
+            }
             if (i < 7) {
                 consoleio.printar_2("//////////");
             }
