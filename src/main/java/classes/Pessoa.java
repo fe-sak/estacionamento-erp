@@ -1,4 +1,4 @@
-package Classes;
+package classes;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -21,10 +21,11 @@ public class Pessoa {
         this.cpf = cpf;
     }
 
-    public void imprimir() {
-        System.out.println("Cliente");
-        System.out.println("\tNome: " + this.getNome());
-        System.out.println("\tCpf: " + this.getCpf());
+    @Override
+    public String toString() {
+        return "Cliente\n" +
+                "\tNome: " + this.getNome() + "\n" +
+                "\tCPF: " + this.getCpf();
     }
 
     public static boolean validaCPF(String cpf) {
