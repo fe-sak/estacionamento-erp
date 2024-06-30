@@ -1,175 +1,289 @@
 
-import Classes.*;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
+import classes.*;
+import enums.EOperacao;
+import enums.EVeiculo;
+import org.beryx.textio.TextIO;
 
+import java.awt.*;
+import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Scanner;
+import java.util.stream.Collectors;
 
 public class Main {
 
     public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
-        Estacionamento estacionamento = new Estacionamento();
+        ConsoleIO consoleio = new ConsoleIO();
 
-        System.out.println("Este programa permite gerenciar um estacionamento");
+        consoleio.printarInfo("++++++++++ Gerenciador de estacionamento inicializado ++++++++++".toUpperCase());
+        consoleio.printarLinhaVazia();
+
+        Estacionamento estacionamento = new Estacionamento();
 
         while (true) {
             try {
-                imprimirOperacoesDisponiveis();
+                EOperacao EOperacao = escolherUmaOperacao(consoleio);
 
-                String operacao = escolherUmaOperacao(scanner);
-
-                if (operacao.equals("6")) {
-                    System.out.println("O programa foi encerrado.");
+                if (EOperacao == enums.EOperacao.ENCERRAR_PROGRAMA) {
+                    consoleio.printarInfo("O programa foi encerrado.");
+                    Thread.sleep(1000);
+                    consoleio.getTextIO().getTextTerminal().dispose();
                     return;
                 }
 
-                executarOperacao(operacao, scanner, estacionamento);
-                System.out.println();
+                executarOperacao(consoleio, EOperacao, estacionamento);
+                consoleio.printarLinhaVazia();
             } catch (Exception e) {
-                System.out.print("ERRO: "); // TODO pintar de vermelho usando a lib de console
-                System.out.println(e.getMessage());
+                consoleio.printarErro("ERRO: " + e.getMessage());
             }
         }
     }
 
-    private static void executarOperacao(String operacao, Scanner scanner, Estacionamento estacionamento) throws Exception {
-        switch (operacao) {
-            case "1": {
-                
-                System.out.flush();
-                
-                System.out.println("Estacionar um veículo foi selecionada");
+    public static Veiculo coletarVeiculo(ConsoleIO consoleio) {
+        Pessoa dono = coletarPessoa(consoleio);
 
-                System.out.println("Digite o nome do cliente: ");
-                String nomeDono = scanner.nextLine();
+        String tipoVeiculo = consoleio.getTextIO().newStringInputReader().read("Escolha um tipo de veículo:\n 1: Carro\n 2: Moto\nDigite sua escolha: ");
+        while (!Arrays.stream(EVeiculo.values()).map(o -> String.valueOf(o.getCodigo())).collect(Collectors.toList()).contains(tipoVeiculo)) {
+            consoleio.printarErro("Opção inválida. Digite 1 ou 2");
+            tipoVeiculo = consoleio.getTextIO().newStringInputReader().read("Escolha um tipo de veículo:\n 1: Carro\n 2: Moto\nDigite sua escolha: ");
+        }
 
-                System.out.println("Digite o cpf do cliente: ");
-                String cpfDono = scanner.nextLine();
+        String placa = consoleio.getTextIO().newStringInputReader().read("Digite a placa do veículo: ");
 
-                while (!Pessoa.validaCPF(cpfDono)) {
-                    System.out.print("CPF inválido.\nDigite o cpf do cliente: ");
-                    cpfDono = scanner.nextLine();
-                }
+        while (!Veiculo.validarPlaca(placa)) {
+            consoleio.printarErro("Placa inválida. Ela deve obedecer a forma AAA-0000");
+            placa = consoleio.getTextIO().newStringInputReader().read("Digite a placa do veículo: ");
+        }
 
-                System.out.println("Qual o veículo? Digite 1 para carro e 2 para moto: ");
-                String tipoVeiculo = scanner.nextLine();
+        String cor = consoleio.getTextIO().newStringInputReader().read("Digite a cor do veículo: ");
 
-                while (!Arrays.asList(new String[]{"1", "2"}).contains(operacao)) {
-                    System.out.print("Veículo inválido.\nDigite 1 para carro e 2 para moto: ");
-                    tipoVeiculo = scanner.nextLine();
-                }
+        return EVeiculo.escolher(Integer.valueOf(tipoVeiculo)).instanciar(cor, placa, dono);
+    }
 
-                System.out.print("Digite a placa do veículo: ");
-                String placa = scanner.nextLine();
-                
-                while (!Veiculo.validaPlaca(placa)) {
-                    System.out.print("Placa inválida.\nDigite a placa do veículo: ");
-                    placa = scanner.nextLine();
-                }
+    private static Pessoa coletarPessoa(ConsoleIO consoleio) {
+        String nome = consoleio.getTextIO().newStringInputReader().read("Digite o nome do cliente: ");
 
-                System.out.println("Digite a cor do veículo: ");
-                String cor = scanner.nextLine();
+        String cpf = consoleio.getTextIO().newStringInputReader().read("Digite o cpf do cliente: ");
 
-                Pessoa dono = new Pessoa(nomeDono, cpfDono);
+        while (!Pessoa.validaCPF(cpf)) {
+            consoleio.printarErro("CPF inválido. O CPF deve ter a forma 000.000.000-04");
+            cpf = consoleio.getTextIO().newStringInputReader().read("Digite o cpf do cliente: ");
+        }
 
-                Veiculo veiculo;
+        return new Pessoa(nome, cpf);
+    }
 
-                if (tipoVeiculo.equals("1")) {
-                    veiculo = new Carro(cor, placa, dono);
-                } else {
-                    veiculo = new Moto(cor, placa, dono);
-                }
+    public static EOperacao escolherUmaOperacao(ConsoleIO consoleio) {
+        String operacao = consoleio.getTextIO().newStringInputReader().read("Escolha uma opção:\n"
+                + String.join("\n", EOperacao.listar()) + "\nDigite uma opção");
+
+        while (!Arrays.stream(EOperacao.values()).map(o -> String.valueOf(o.getCodigo())).collect(Collectors.toList()).contains(operacao)) {
+            consoleio.printarErro("Opção inválida. Digite um número de 1 a 6");
+
+            operacao = consoleio.getTextIO().newStringInputReader().read("Escolha uma opção:\n "
+                    + String.join("\n", EOperacao.listar()) + "\n");
+        }
+
+        return EOperacao.escolher(Integer.valueOf(operacao));
+    }
+
+    private static void executarOperacao(ConsoleIO consoleio, EOperacao EOperacao, Estacionamento estacionamento) throws Exception {
+        switch (EOperacao) {
+            case ESTACIONAR: {
+                consoleio.printarInfo(EOperacao.getNome() + " foi selecionada");
+
+                Veiculo veiculo = coletarVeiculo(consoleio);
 
                 int vaga = estacionamento.estacionarVeiculo(veiculo);
 
-                System.out.println("TICKET DO ESTACIONAMENTO ----------------------------------------------");
-
-                System.out.println("Vaga: 0" + vaga);
-                System.out.println("Entrada: " + veiculo.getEntradaFormatada());
-                System.out.println("Taxa por hora: R$ " + veiculo.getTaxaHoraFormatada());
-
-                veiculo.getCliente().imprimir();
-                veiculo.imprimir();
-
-                System.out.println("Aperte alguma tecla para voltar ao Menu de Operações");
-                String w = scanner.nextLine();
-                System.out.flush();
+                consoleio.printarSucesso("Veículo estacionado com sucesso");
+                printarTicketEntrada(consoleio, vaga, veiculo);
 
                 break;
             }
-            case "2": {
-                System.out.flush();
-                System.out.println("Digite a placa do veículo: ");
-                String placa = scanner.nextLine();
+            case RETIRAR_VEICULO: {
+                consoleio.printarInfo(EOperacao.getNome() + " foi selecionada");
 
-                Veiculo veiculo = estacionamento.tirarVeiculo(placa);
+                String placa = consoleio.getTextIO().newStringInputReader().read("Digite a placa do veículo: ");
 
-                System.out.println("Veículo retirado com sucesso"); // TODO pintar de verde
-                veiculo.imprimir();
+                while (!Veiculo.validarPlaca(placa)) {
+                    consoleio.printarErro("Placa inválida. Ela deve obedecer a forma AAA-0000");
 
-                System.out.println("\tHorário de entrada:" + veiculo.getEntradaFormatada());
-                System.out.println("\tHorário de saída:" + veiculo.getSaidaFormatada());
-                System.out.println("\tPermanência total: " + veiculo.getPermanencia() + "h");
-                System.out.println("\tPagamento: R$" + veiculo.getPagamento());
+                    placa = consoleio.getTextIO().newStringInputReader().read("Digite a placa do veículo: ");
+                }
 
-                System.out.println("Aperte alguma tecla para voltar ao Menu de Operações");
-                String w = scanner.nextLine();
-                System.out.flush();
+                Veiculo veiculo = estacionamento.retirarVeiculo(placa);
+                consoleio.printarSucesso("Veículo foi retirado com sucesso");
+
+                printarTicketSaida(consoleio, veiculo);
+                break;
+            }
+            case IMPRIMIR_ESTACIONAMENTO_CONSOLE: {
+                consoleio.printarInfo(EOperacao.getNome() + " foi selecionada");
+
+                printarEstacionamento(consoleio, estacionamento);
+                consoleio.printarSucesso("Estacionamento impresso no console com sucesso");
 
                 break;
             }
-            case "3": {
-                System.out.flush();
-                estacionamento.Mostra_Estacionamento();
-                System.out.println("Aperte alguma tecla para voltar ao Menu de Operações");
-                String w = scanner.nextLine();
-                System.out.flush();
-                break;
-            }
-            case "4": {
-                System.out.flush();
-                estacionamento.ImprimirRegistros();
-                System.out.println("Aperte alguma tecla para voltar ao Menu de Operações");
-                String w = scanner.nextLine();
-                System.out.flush();
-                break;
-            }
-            case "5": {
-                System.out.flush();
-                estacionamento.GerarPDF();
-                System.out.println("Relatório Gerado com sucesso na pasta Auxiliar!");
-                System.out.println("Aperte alguma tecla para voltar ao Menu de Operações");
-                String w = scanner.nextLine();
-                System.out.flush();
+            case PRINTAR_REGISTROS_DO_DIA: {
+                consoleio.printarInfo(EOperacao.getNome() + " foi selecionada");
+
+                String opcao_d = consoleio.getTextIO().newStringInputReader().read("Informe o dia que deseja visualizar: ");
+
+                int opcao_dia = Integer.parseInt(opcao_d);
+
+                while (opcao_dia > 31 || opcao_dia < 1) {
+                    consoleio.printarErro("Valor inválido, informe um dia Valido");
+                    opcao_d = consoleio.getTextIO().newStringInputReader().read("Informe o dia que deseja visualizar: ");
+                    opcao_dia = Integer.parseInt(opcao_d);
+                }
+
+                String registros = estacionamento.printarRegistrosDia(opcao_dia);
+
+                if (registros.trim().isEmpty()) {
+                    consoleio.printarSucesso("Não houveram registros no dia.");
+                    break;
+                }
+
+                consoleio.printarSucesso("Registros do dia: ");
+                consoleio.printar(registros);
 
                 break;
             }
-            default: {
-                System.out.println("Operação não reconhecida, tente novamente");
+
+            case PRINTAR_RELATORIO: {
+                consoleio.printarInfo(EOperacao.getNome() + " foi selecionada");
+
+                String opcaoRelatorio = consoleio.getTextIO().newStringInputReader()
+                        .read("Qual o Relatorio deseja gerar? Digite 1 para Apenas Registros Ativos e 2 para Todos os Regitros: ");
+
+                while (!Arrays.asList(new String[]{"1", "2"}).contains(opcaoRelatorio)) {
+                    opcaoRelatorio = consoleio.getTextIO().newStringInputReader()
+                            .read("Opcao inválida.\nDigite 1 para Apenas Registros Ativos e 2 para Todos os Registros: ");
+                }
+
+                estacionamento.GerarPDF(opcaoRelatorio);
+
+                consoleio.printarSucesso("Relatório Gerado com sucesso na pasta ./relatorios");
+                break;
             }
         }
     }
 
-    private static String escolherUmaOperacao(Scanner scanner) {
-        System.out.print("Escolha uma operação: ");
-        String operacao = scanner.nextLine();
+    private static void printarTicketSaida(ConsoleIO consoleio, Veiculo veiculo) {
+        consoleio.printar(veiculo.toString());
 
-        while (!Arrays.asList(new String[]{"1", "2", "3", "4", "5", "6"}).contains(operacao)) {
-            System.out.println("Operação inválida.\nDigite uma operação válida: ");
-            operacao = scanner.nextLine();
-        }
-        return operacao;
+        consoleio.printar("\tHorário de entrada:" + veiculo.getEntradaFormatada());
+        consoleio.printar("\tHorário de saída:" + veiculo.getSaidaFormatada());
+        consoleio.printar("\tPermanência total: " + veiculo.getPermanencia() + "h");
+        consoleio.printar("\tPagamento: R$" + veiculo.getPagamento());
     }
 
-    private static void imprimirOperacoesDisponiveis() {
-        System.out.println("Operações disponíveis:");
-        System.out.println("1 - Estacionar um veículo");
-        System.out.println("2 - Retirar um veículo");
-        System.out.println("3 - Mostrar o estacionamento");
-        System.out.println("4 - Ver os registros de hoje");
-        System.out.println("5 - Imprimir relatório em pdf");
-        System.out.println("6 - Parar o programa");
+    private static void printarTicketEntrada(ConsoleIO consoleio, int vaga, Veiculo veiculo) {
+        consoleio.printar("TICKET DO ESTACIONAMENTO ----------------------------------------------");
+
+        consoleio.printar("Vaga: 0" + vaga);
+        consoleio.printar("Entrada: " + veiculo.getEntradaFormatada());
+        consoleio.printar("Taxa por hora: R$ " + veiculo.getTaxaHoraFormatada());
+
+        consoleio.printar(veiculo.getCliente().toString());
+        consoleio.printar(veiculo.toString());
+    }
+
+    public static void printarEstacionamento(ConsoleIO consoleio, Estacionamento estacionamento) {
+
+        java.util.List<String> status_vaga = new ArrayList<>(8);
+
+        int i;
+
+        for (i = 0; i < estacionamento.getVeiculosEstacionados().size(); i++) {
+
+            if (estacionamento.getVeiculosEstacionados().get(i) != null) {
+                int vaga = i + 1;
+                status_vaga.add("OCUPADO");
+
+            }
+
+            if (estacionamento.getVeiculosEstacionados().get(i) == null) {
+                int vaga = i + 1;
+
+                status_vaga.add("-LIVRE-");
+            }
+        }
+        consoleio.printar("    -1-       -2-       -3-       -4-");
+        consoleio.printar_2("  ");
+
+        for (i = 0; i <= 3; i++) {
+            int local = i;
+            if ("OCUPADO".equals(status_vaga.get(i))) {
+                consoleio.getTextIO().getTextTerminal()
+                        .executeWithPropertiesConfigurator(props -> props
+                        .setPromptColor(Color.RED), t
+                                -> t.print(status_vaga.get(local)));
+
+            } else {
+                consoleio.getTextIO().getTextTerminal()
+                        .executeWithPropertiesConfigurator(props -> props
+                        .setPromptColor(Color.GREEN), t
+                                -> t.print(status_vaga.get(local)));
+            }
+            if (i < 3) {
+                consoleio.printar_2("   ");
+            }
+        }
+        consoleio.printar("");
+        for (i = 0; i <= 3; i++) {
+            int local = i;
+            if ("OCUPADO".equals(status_vaga.get(i))) {
+                consoleio.getTextIO().getTextTerminal()
+                        .executeWithPropertiesConfigurator(props -> props
+                        .setPromptColor(Color.GRAY), t
+                                -> t.print("  " + estacionamento.getVeiculosEstacionados().get(local).getPlaca()));
+
+            } else {
+                consoleio.printar_2("     ");
+            }
+        }
+        consoleio.printar("");
+        consoleio.printar("");
+        consoleio.printar("----------------------------------------");
+        consoleio.printar("    -5-       -6-       -7-       -8-");
+        consoleio.printar_2("  ");
+        for (i = 4; i <= 7; i++) {
+            int local = i;
+            if ("OCUPADO".equals(status_vaga.get(i))) {
+                consoleio.getTextIO().getTextTerminal()
+                        .executeWithPropertiesConfigurator(props -> props
+                        .setPromptColor(Color.RED), t
+                                -> t.print(status_vaga.get(local)));
+
+            } else {
+                consoleio.getTextIO().getTextTerminal()
+                        .executeWithPropertiesConfigurator(props -> props
+                        .setPromptColor(Color.GREEN), t
+                                -> t.print(status_vaga.get(local)));
+            }
+            if (i < 7) {
+                consoleio.printar_2("   ");
+            }
+        }
+        consoleio.printar("");
+        for (i = 4; i <= 7; i++) {
+            int local = i;
+            if ("OCUPADO".equals(status_vaga.get(i))) {
+                consoleio.getTextIO().getTextTerminal()
+                        .executeWithPropertiesConfigurator(props -> props
+                        .setPromptColor(Color.GRAY), t
+                                -> t.print("  " + estacionamento.getVeiculosEstacionados().get(local).getPlaca()));
+
+            } else {
+                consoleio.printar_2("     ");
+            }
+        }
+        consoleio.printar("");
+        consoleio.printar("");
+        consoleio.printar("----------------------------------------");
+
     }
 
 }
