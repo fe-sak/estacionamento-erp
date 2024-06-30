@@ -244,7 +244,6 @@ public class Main {
                 consoleio.printar_2("     ");
             }
         }
-        consoleio.printar_2("");
         consoleio.printar("");
         consoleio.printar("");
         consoleio.printar("----------------------------------------");
@@ -281,7 +280,6 @@ public class Main {
                 consoleio.printar_2("     ");
             }
         }
-        consoleio.printar_2("");
         consoleio.printar("");
         consoleio.printar("");
         consoleio.printar("----------------------------------------");
