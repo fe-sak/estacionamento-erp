@@ -241,7 +241,7 @@ public class Main {
                                 -> t.print("  " + estacionamento.getVeiculosEstacionados().get(local).getPlaca()));
 
             } else {
-                consoleio.printar_2("     ");
+                consoleio.printar_2("          ");
             }
         }
         consoleio.printar("");
@@ -277,7 +277,7 @@ public class Main {
                                 -> t.print("  " + estacionamento.getVeiculosEstacionados().get(local).getPlaca()));
 
             } else {
-                consoleio.printar_2("     ");
+                consoleio.printar_2("          ");
             }
         }
         consoleio.printar("");
