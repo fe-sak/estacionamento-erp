@@ -129,15 +129,15 @@ public class Main {
                 consoleio.printarInfo(EOperacao.getNome() + " foi selecionada");
 
                 String opcao_d = consoleio.getTextIO().newStringInputReader().read("Informe o dia que deseja visualizar: ");
-                
+
                 int opcao_dia = Integer.parseInt(opcao_d);
-                
-                while (opcao_dia > 31 || opcao_dia < 1) {     
+
+                while (opcao_dia > 31 || opcao_dia < 1) {
                     consoleio.printarErro("Valor inválido, informe um dia Valido");
                     opcao_d = consoleio.getTextIO().newStringInputReader().read("Informe o dia que deseja visualizar: ");
                     opcao_dia = Integer.parseInt(opcao_d);
                 }
-                
+
                 String registros = estacionamento.printarRegistrosDia(opcao_dia);
 
                 if (registros.trim().isEmpty()) {
@@ -147,7 +147,7 @@ public class Main {
 
                 consoleio.printarSucesso("Registros do dia: ");
                 consoleio.printar(registros);
-                
+
                 break;
             }
 
@@ -193,6 +193,7 @@ public class Main {
     public static void printarEstacionamento(ConsoleIO consoleio, Estacionamento estacionamento) {
 
         java.util.List<String> status_vaga = new ArrayList<>(8);
+
         int i;
 
         for (i = 0; i < estacionamento.getVeiculosEstacionados().size(); i++) {
@@ -209,8 +210,8 @@ public class Main {
                 status_vaga.add("-LIVRE-");
             }
         }
-        consoleio.printar("///-1-//////////////-2-//////////////-3-//////////////-4-//////");
-        consoleio.printar_2("/");
+        consoleio.printar("    -1-       -2-       -3-       -4-");
+        consoleio.printar_2("  ");
 
         for (i = 0; i <= 3; i++) {
             int local = i;
@@ -227,36 +228,28 @@ public class Main {
                                 -> t.print(status_vaga.get(local)));
             }
             if (i < 3) {
-                consoleio.printar_2("//////////");
+                consoleio.printar_2("   ");
             }
         }
-        consoleio.printar_2("////");
         consoleio.printar("");
-
-        consoleio.printar_2("/");
         for (i = 0; i <= 3; i++) {
             int local = i;
             if ("OCUPADO".equals(status_vaga.get(i))) {
                 consoleio.getTextIO().getTextTerminal()
                         .executeWithPropertiesConfigurator(props -> props
-                        .setPromptColor(Color.RED), t
-                                -> t.print(status_vaga.get(local)));
+                        .setPromptColor(Color.GRAY), t
+                                -> t.print("  " + estacionamento.getVeiculosEstacionados().get(local).getPlaca()));
 
             } else {
-                consoleio.getTextIO().getTextTerminal()
-                        .executeWithPropertiesConfigurator(props -> props
-                        .setPromptColor(Color.GREEN), t
-                                -> t.print(status_vaga.get(local)));
-            }
-            if (i < 3) {
-                consoleio.printar_2("//////////");
+                consoleio.printar_2("     ");
             }
         }
-        consoleio.printar_2("////");
+        consoleio.printar_2("");
         consoleio.printar("");
-        consoleio.printar("///////////////////////////////////////////////////////////////");
-        consoleio.printar("///-5-//////////////-6-//////////////-7-//////////////-8-//////");
-        consoleio.printar_2("/");
+        consoleio.printar("");
+        consoleio.printar("----------------------------------------");
+        consoleio.printar("    -5-       -6-       -7-       -8-");
+        consoleio.printar_2("  ");
         for (i = 4; i <= 7; i++) {
             int local = i;
             if ("OCUPADO".equals(status_vaga.get(i))) {
@@ -272,33 +265,26 @@ public class Main {
                                 -> t.print(status_vaga.get(local)));
             }
             if (i < 7) {
-                consoleio.printar_2("//////////");
+                consoleio.printar_2("   ");
             }
         }
-        consoleio.printar_2("////");
         consoleio.printar("");
-        consoleio.printar_2("/");
         for (i = 4; i <= 7; i++) {
             int local = i;
             if ("OCUPADO".equals(status_vaga.get(i))) {
                 consoleio.getTextIO().getTextTerminal()
                         .executeWithPropertiesConfigurator(props -> props
-                        .setPromptColor(Color.RED), t
-                                -> t.print(status_vaga.get(local)));
+                        .setPromptColor(Color.GRAY), t
+                                -> t.print("  " + estacionamento.getVeiculosEstacionados().get(local).getPlaca()));
 
             } else {
-                consoleio.getTextIO().getTextTerminal()
-                        .executeWithPropertiesConfigurator(props -> props
-                        .setPromptColor(Color.GREEN), t
-                                -> t.print(status_vaga.get(local)));
-            }
-            if (i < 7) {
-                consoleio.printar_2("//////////");
+                consoleio.printar_2("     ");
             }
         }
-        consoleio.printar_2("////");
+        consoleio.printar_2("");
         consoleio.printar("");
-        consoleio.printar("///////////////////////////////////////////////////////////////");
+        consoleio.printar("");
+        consoleio.printar("----------------------------------------");
 
     }
 
